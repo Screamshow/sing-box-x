@@ -15,6 +15,11 @@ def publish_catalog(root, published, release, tag):
     index='candidate.json' if release['prerelease'] else 'latest.json'
     temporary=root/(index+'.new');temporary.write_text(json.dumps(catalog,indent=2)+'\n')
     temporary.chmod(0o644);os.replace(temporary,root/index)
+    candidate=root/'candidate.json'
+    if not release['prerelease'] and candidate.exists():
+        previous=json.loads(candidate.read_text())
+        if previous.get('release_tag',previous.get('version'))==tag:
+            candidate.unlink()
     return index
 
 def main():
