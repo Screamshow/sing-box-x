@@ -26,6 +26,12 @@ git -C work/source checkout --detach "$commit"
 export SOURCE_DATE_EPOCH=$(git -C work/source show -s --format=%ct HEAD)
 python3 scripts/prepare-source.py work/source
 gofmt -w work/source/include/native_api*.go
+(cd work/source; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go list -deps -tags "$tags" ./cmd/sing-box) > work/dependencies.txt
+grep -Fxq github.com/sagernet/sing-box/experimental/clashapi work/dependencies.txt
+grep -Fxq github.com/sagernet/sing-box/transport/v2raygrpclite work/dependencies.txt
+if grep -Eq '^google.golang.org/grpc|^github.com/sagernet/sing-box/service/api$' work/dependencies.txt; then
+    echo 'Unexpected native management API dependency' >&2; exit 1
+fi
 if [[ ! -x work/upx/upx ]]; then
     curl -fL --retry 3 "https://github.com/upx/upx/releases/download/v${upx_version}/upx-${upx_version}-amd64_linux.tar.xz" -o work/upx.tar.xz
     echo "$upx_hash  work/upx.tar.xz" | sha256sum -c -
@@ -42,5 +48,6 @@ for arch in arm64 amd64; do
     work/upx/upx -t "work/sing-box-$arch"
 done
 python3 scripts/package.py --apk-tool "${APK_TOOL:?Set APK_TOOL to OpenWrt SDK host apk}"
+python3 scripts/check-packages.py
 tar --sort=name --mtime="@$SOURCE_DATE_EPOCH" --owner=0 --group=0 --numeric-owner --exclude=.git -czf "dist/sing-box-x-${version}-source.tar.gz" -C work source
 python3 scripts/manifest.py
