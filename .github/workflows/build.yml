@@ -1,0 +1,55 @@
+name: Build sing-box X
+on:
+  push:
+    tags: ['[0-9]*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5.0.0
+      - uses: actions/setup-go@v6.0.0
+        with:
+          go-version: '1.26.8'
+          cache: false
+      - name: Install OpenWrt APK host tool
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          mkdir -p work/sdk
+          curl -fL --retry 3 https://downloads.openwrt.org/releases/25.12.3/targets/x86/64/openwrt-sdk-25.12.3-x86-64_gcc-14.3.0_musl.Linux-x86_64.tar.zst -o work/sdk.tar.zst
+          curl -fL --retry 3 https://downloads.openwrt.org/releases/25.12.3/targets/x86/64/sha256sums -o work/sdk.sha256sums
+          expected=$(awk '$2 ~ /openwrt-sdk-25.12.3-x86-64_gcc-14.3.0_musl.Linux-x86_64.tar.zst$/ {print $1}' work/sdk.sha256sums)
+          test -n "$expected"
+          echo "$expected  work/sdk.tar.zst" | sha256sum -c -
+          tar --zstd -xf work/sdk.tar.zst --strip-components=1 -C work/sdk
+          echo "APK_TOOL=$PWD/work/sdk/staging_dir/host/bin/apk" >> "$GITHUB_ENV"
+      - name: Build and package
+        run: |
+          expected=$(python3 -c "import json; print(json.load(open('build-config.json'))['version'])")
+          if [ "$GITHUB_REF_TYPE" = tag ]; then test "$GITHUB_REF_NAME" = "$expected"; fi
+          bash scripts/build.sh
+          ./work/sing-box-amd64 version
+          ./work/sing-box-amd64 check -c tests/direct.json
+      - uses: actions/upload-artifact@v4.6.2
+        with:
+          name: sing-box-x-packages
+          path: dist/*
+          if-no-files-found: error
+  release:
+    if: github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4.3.0
+        with:
+          name: sing-box-x-packages
+          path: dist
+      - name: Publish preparation release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --prerelease --title "sing-box X $GITHUB_REF_NAME" --notes "Preparation release based on sing-box 1.14.2. UPX builds for OpenWrt ARM64 and x86-64. Full migration and ARM64 runtime validation are required before Forkop canary adoption. Router installation uses the Forkop mirror."
