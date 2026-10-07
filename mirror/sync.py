@@ -49,11 +49,11 @@ def main():
                 target=staging/name;target.write_bytes(original)
                 asset['upstream_sha256']=asset['sha256']
                 if target.suffix=='.apk':
-                    subprocess.run([args.apk_tool,'adbsign','--sign-key',args.sign_key,str(target)],check=True)
+                    subprocess.run([args.apk_tool,'adbsign','--allow-untrusted','--sign-key',args.sign_key,str(target)],check=True)
                     with tempfile.TemporaryDirectory(prefix='sing-box-x-keys-') as keys:
                         shutil.copyfile(args.public_key,Path(keys)/'forkop-apk.pem')
                         subprocess.run([args.apk_tool,'--keys-dir',keys,'verify',str(target)],check=True)
-                    dump=subprocess.check_output([args.apk_tool,'adbdump',str(target)],text=True)
+                    dump=subprocess.check_output([args.apk_tool,'adbdump','--allow-untrusted',str(target)],text=True)
                     size=re.search(r'installed-size:\s*(\d+)',dump)
                     if not size or int(size.group(1))!=asset['installed_size']:raise ValueError('Signing changed installed size')
                     asset['signed']=True
