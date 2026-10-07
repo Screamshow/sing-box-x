@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Validate IPK directory layout before release publication."""
-import io,json,tarfile
+import argparse,io,json,tarfile
 from pathlib import Path
 root=Path(__file__).resolve().parents[1]
-for package in sorted((root/'dist').glob('*.ipk')):
+parser=argparse.ArgumentParser();parser.add_argument('directory',nargs='?',type=Path,default=root/'dist');args=parser.parse_args()
+packages=sorted(args.directory.glob('*.ipk'));assert len(packages)==2,'Expected both IPK architectures'
+for package in packages:
     with tarfile.open(package,'r:gz') as outer:
         assert set(outer.getnames())=={'debian-binary','control.tar.gz','data.tar.gz'},package.name
         assert outer.extractfile('debian-binary').read()==b'2.0\n'

@@ -36,6 +36,8 @@ GitHub Actions runs the same recipe and publishes tagged releases. GitHub APKs a
 
 ## Validation status
 
+Revision 2 APK/IPK installation and reinstall passed in isolated roots on the existing OpenWrt 25/24 x86-64 VMs, including preservation of modified configuration. Published mirror files and APK signatures were verified. See [VALIDATION.md](VALIDATION.md) for exact sizes and scope.
+
 Experimental x86-64 binaries passed clean-boot memory, configuration, DNS, ruleset and basic SOCKS/Clash API tests on existing OpenWrt 24/25 VMs. ARM64 execution, real subscription gRPC traffic, latest Xray REALITY compatibility and full package migration checks remain release gates before Forkop canary adoption. Version 1.0.0 packages are preparation artifacts until those checks finish.
 
 ## License and source
