@@ -10,12 +10,31 @@ snapshot() {
     ubus call service list '{"name":"sing-box"}'
 }
 snapshot > "$stage/before"
-base=https://mirror.51343.ru/forkop/sing-box-x/releases/1.0.0
+curl -fsSL https://mirror.51343.ru/forkop/sing-box-x/latest.json -o "$stage/catalog.json"
+version=$(jsonfilter -i "$stage/catalog.json" -e '@.version')
+revision=$(jsonfilter -i "$stage/catalog.json" -e '@.package_revision')
+test "$(jsonfilter -i "$stage/catalog.json" -e '@.name')" = sing-box-x
+test "$version" = "${2:-1.0.1}"
+test "$revision" = "${3:-1}"
+if [ "$kind" = apk ]; then package_version="$version-r$revision"; else package_version="$version-$revision"; fi
+name="sing-box-x_${package_version}_x86_64.$kind"
+select="@.assets[@.name=\"$name\"]"
+url=$(jsonfilter -i "$stage/catalog.json" -e "$select.url")
+hash=$(jsonfilter -i "$stage/catalog.json" -e "$select.sha256")
+length=$(jsonfilter -i "$stage/catalog.json" -e "$select.size")
+test "$(jsonfilter -i "$stage/catalog.json" -e "$select.package")" = sing-box-x
+test "$(jsonfilter -i "$stage/catalog.json" -e "$select.version")" = "$package_version"
+test "$(jsonfilter -i "$stage/catalog.json" -e "$select.architecture")" = x86_64
+test "$(jsonfilter -i "$stage/catalog.json" -e "$select.format")" = "$kind"
+test "$url" = "https://mirror.51343.ru/forkop/sing-box-x/releases/$version/$name"
+test -n "$hash"; test -n "$length"
+curl -fsSL "$url" -o "$archive"
+test "$(wc -c < "$archive" | tr -d ' ')" = "$length"
+printf '%s  %s\n' "$hash" "$archive" | sha256sum -c -
 mkdir -p "$stage/root"
 if [ "$kind" = apk ]; then
-    curl -fsSL "$base/sing-box-x_1.0.0-r2_x86_64.apk" -o "$archive"
     mkdir -p "$stage/root/lib/apk/db" "$stage/root/etc/apk/keys"
-    awk 'BEGIN { RS=""; ORS="\n\n" } $0 !~ /(^|\n)P:sing-box(-tiny|-extended)?(\n|$)/ { print }' /lib/apk/db/installed > "$stage/root/lib/apk/db/installed"
+    awk 'BEGIN { RS=""; ORS="\n\n" } $0 !~ /(^|\n)P:sing-box(-tiny|-extended|-x)?(\n|$)/ { print }' /lib/apk/db/installed > "$stage/root/lib/apk/db/installed"
     awk '$0 !~ /^sing-box($|[-=<>~])/' /etc/apk/world > "$stage/root/etc/apk/world"
     curl -fsSL https://mirror.51343.ru/forkop/forkop-apk.pem -o "$stage/root/etc/apk/keys/forkop.pem"
     apk verify --keys-dir "$stage/root/etc/apk/keys" "$archive"
@@ -23,7 +42,6 @@ if [ "$kind" = apk ]; then
     if ! apk --root "$stage/root" --no-network --no-scripts --keys-dir "$stage/root/etc/apk/keys" add "$archive" > "$stage/install.log" 2>&1; then cat "$stage/install.log"; exit 1; fi
     apk --root "$stage/root" info -e sing-box-x
 else
-    curl -fsSL "$base/sing-box-x_1.0.0-2_x86_64.ipk" -o "$archive"
     mv "$archive" "$archive.ipk"; archive="$archive.ipk"
     mkdir -p "$stage/root/usr/lib/opkg" "$stage/root/var/lock" "$stage/root/tmp"
     awk 'BEGIN { RS=""; ORS="\n\n" } $0 ~ /^Package: (ca-bundle|kmod-tun|kernel|libc|libgcc|libgcc1)\n/ { print }' /usr/lib/opkg/status > "$stage/root/usr/lib/opkg/status"
