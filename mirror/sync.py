@@ -14,6 +14,7 @@ def main():
     parser.add_argument('--root',type=Path,default=Path('/srv/mirror/public/forkop/sing-box-x'))
     parser.add_argument('--apk-tool',default='/root/.cache/forkop/openwrt-sdk/extracted/apk/staging_dir/host/bin/apk')
     parser.add_argument('--sign-key',default='/srv/mirror/keys/forkop-apk.pem')
+    parser.add_argument('--public-key',default='/srv/mirror/public/forkop/forkop-apk.pem')
     args=parser.parse_args()
     if not re.fullmatch(r'\d+\.\d+\.\d+',args.tag):raise ValueError('Invalid tag')
     args.root.mkdir(parents=True,exist_ok=True)
@@ -49,6 +50,9 @@ def main():
                 asset['upstream_sha256']=asset['sha256']
                 if target.suffix=='.apk':
                     subprocess.run([args.apk_tool,'adbsign','--sign-key',args.sign_key,str(target)],check=True)
+                    with tempfile.TemporaryDirectory(prefix='sing-box-x-keys-') as keys:
+                        shutil.copyfile(args.public_key,Path(keys)/'forkop-apk.pem')
+                        subprocess.run([args.apk_tool,'--keys-dir',keys,'verify',str(target)],check=True)
                     dump=subprocess.check_output([args.apk_tool,'adbdump',str(target)],text=True)
                     size=re.search(r'installed-size:\s*(\d+)',dump)
                     if not size or int(size.group(1))!=asset['installed_size']:raise ValueError('Signing changed installed size')
