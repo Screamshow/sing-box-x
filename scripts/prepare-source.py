@@ -2,12 +2,14 @@
 """Add optional native-API exclusion to upstream sing-box (tested on 1.14.2).
 
 Run on a dedicated source checkout, then build with without_native_api.
-Clash API and its with_clash_api build tag remain unchanged. Default builds
-retain the original native API. This does not remove transport gRPC support.
+Clash API and its with_clash_api build tag are retained, with inline match
+evidence added to connection snapshots. Default builds retain the original
+native API. This does not remove transport gRPC support.
 """
 
 import argparse
 import re
+import runpy
 from pathlib import Path
 
 
@@ -82,3 +84,4 @@ if __name__ == "__main__":
     parser.add_argument("source", type=Path, help="dedicated upstream sing-box source directory")
     args = parser.parse_args()
     prepare(args.source.resolve())
+    runpy.run_path(str(Path(__file__).with_name("prepare-route-match.py")))["prepare"](args.source.resolve())

@@ -26,6 +26,9 @@ git -C work/source checkout --detach "$commit"
 export SOURCE_DATE_EPOCH=$(git -C work/source show -s --format=%ct HEAD)
 python3 scripts/prepare-source.py work/source
 gofmt -w work/source/include/native_api*.go
+gofmt -w work/source/adapter/inbound.go work/source/route/rule/*.go work/source/experimental/clashapi/connections*.go
+(cd work/source; CGO_ENABLED=0 go test -ldflags=-checklinkname=0 -tags "$tags" ./route/rule ./experimental/clashapi ./common/trafficcontrol)
+(cd work/source; CGO_ENABLED=1 go test -race -ldflags=-checklinkname=0 -tags "$tags" ./route/rule ./experimental/clashapi)
 (cd work/source; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go list -deps -tags "$tags" ./cmd/sing-box) > work/dependencies.txt
 grep -Fxq github.com/sagernet/sing-box/experimental/clashapi work/dependencies.txt
 grep -Fxq github.com/sagernet/sing-box/transport/v2raygrpclite work/dependencies.txt
