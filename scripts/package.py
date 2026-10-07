@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """Package the packed executable for OpenWrt without host-architecture guessing."""
 import argparse, gzip, hashlib, io, json, os, shutil, subprocess, tarfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 ROOT=Path(__file__).resolve().parents[1]
 def tar_bytes(files):
     stream=io.BytesIO()
     with gzip.GzipFile(fileobj=stream,mode='wb',mtime=0) as gz:
         with tarfile.open(fileobj=gz,mode='w',format=tarfile.GNU_FORMAT) as tar:
+            directories={str(parent) for name,_,_ in files for parent in PurePosixPath(name).parents if str(parent)!='.'}
+            for name in sorted(directories,key=lambda value:(value.count('/'),value)):
+                item=tarfile.TarInfo(name+'/');item.type=tarfile.DIRTYPE;item.mode=0o755
+                item.uid=item.gid=0;item.mtime=int(os.environ.get('SOURCE_DATE_EPOCH','0'));tar.addfile(item)
             for name,content,mode in sorted(files):
                 item=tarfile.TarInfo(name);item.size=len(content);item.mode=mode
                 item.uid=item.gid=0;item.mtime=int(os.environ.get('SOURCE_DATE_EPOCH','0'))

@@ -16,7 +16,7 @@ def main():
     parser.add_argument('--sign-key',default='/srv/mirror/keys/forkop-apk.pem')
     parser.add_argument('--public-key',default='/srv/mirror/public/forkop/forkop-apk.pem')
     args=parser.parse_args()
-    if not re.fullmatch(r'\d+\.\d+\.\d+',args.tag):raise ValueError('Invalid tag')
+    if not re.fullmatch(r'\d+\.\d+\.\d+(-r[1-9]\d*)?',args.tag):raise ValueError('Invalid tag')
     args.root.mkdir(parents=True,exist_ok=True)
     with (args.root/'.sync.lock').open('w') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
@@ -26,8 +26,9 @@ def main():
         manifest_data=fetch(assets['manifest.json']['browser_download_url'])
         if digest(manifest_data)!=assets['manifest.json']['digest'].removeprefix('sha256:'):raise ValueError('Manifest digest mismatch')
         manifest=json.loads(manifest_data)
-        if manifest['version']!=args.tag or manifest['name']!='sing-box-x':raise ValueError('Unexpected manifest')
-        required={f'sing-box-x_{args.tag}-{revision}_{arch}.{fmt}' for arch in ('aarch64_cortex-a53','x86_64') for fmt,revision in (('apk','r1'),('ipk','1'))}
+        if manifest.get('release_tag',manifest['version'])!=args.tag or manifest['name']!='sing-box-x':raise ValueError('Unexpected manifest')
+        revision=args.tag.rsplit('-r',1)[1] if '-r' in args.tag else '1'
+        required={f'sing-box-x_{manifest["version"]}-{rev}_{arch}.{fmt}' for arch in ('aarch64_cortex-a53','x86_64') for fmt,rev in (('apk','r'+revision),('ipk',revision))}
         if not required.issubset({a['name'] for a in manifest['assets']}):raise ValueError('Required packages missing')
         releases=args.root/'releases';releases.mkdir(exist_ok=True);destination=releases/args.tag
         if destination.exists():

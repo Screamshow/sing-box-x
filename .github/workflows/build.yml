@@ -27,7 +27,7 @@ jobs:
           echo "APK_TOOL=$PWD/work/sdk/staging_dir/host/bin/apk" >> "$GITHUB_ENV"
       - name: Build and package
         run: |
-          expected=$(python3 -c "import json; print(json.load(open('build-config.json'))['version'])")
+          expected=$(python3 -c "import json; print(json.load(open('build-config.json')).get('release_tag') or json.load(open('build-config.json'))['version'])")
           if [ "$GITHUB_REF_TYPE" = tag ]; then test "$GITHUB_REF_NAME" = "$expected"; fi
           bash scripts/build.sh
           ./work/sing-box-amd64 version

@@ -10,13 +10,15 @@ The executable is compressed with UPX. Flash storage contains the packed executa
 
 ## Packages and installation
 
+Use packaging revision 2 (`1.0.0-r2`). The initial preliminary revision is superseded: its IPK data archive lacked directory entries required by opkg. Revision 2 retains sing-box X version 1.0.0 and corrects package creation.
+
 APK packages target OpenWrt 25; IPK packages target OpenWrt 24. Supported package architectures: `aarch64_cortex-a53` and `x86_64`. Each package owns `/usr/bin/sing-box`, `/etc/init.d/sing-box`, `/etc/config/sing-box` and `/usr/share/sing-box-x/build.json`. The service is disabled by default. Existing configuration is preserved by the package manager.
 
 Packages conflict with `sing-box`, `sing-box-tiny` and `sing-box-extended`. Variant replacement must be managed as a transaction with staged rollback packages. Do not force file overwrites.
 
 Router downloads must use the Forkop mirror:
 
-`https://mirror.51343.ru/forkop/sing-box-x/releases/1.0.0/`
+`https://mirror.51343.ru/forkop/sing-box-x/releases/1.0.0-r2/`
 
 GitHub releases are the mirror's upstream distribution source. Routers do not need GitHub access. `manifest.json` records package hashes, archive bytes, installed payload bytes and packed/plain binary sizes. Installed size describes the packed payload, not its decompressed RAM image; allocator overhead and installation reserve are calculated separately by Forkop.
 
