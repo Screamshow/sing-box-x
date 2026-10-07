@@ -1,10 +1,10 @@
 # Preparation validation â€” 2026-10-07
 
-Release: **1.0.0-r2**, application version **1.0.0**, upstream **1.14.2**.
+Release: **1.0.0**, package revision **2**, upstream **1.14.2**. The stable release reuses the validated revision 2 executables and packages without rebuilding them.
 
 GitHub build: https://github.com/Screamshow/sing-box-x/actions/runs/37649819963
 
-Mirror manifest: https://mirror.51343.ru/forkop/sing-box-x/releases/1.0.0-r2/manifest.json
+Mirror manifest: https://mirror.51343.ru/forkop/sing-box-x/releases/1.0.0/manifest.json
 
 | Architecture | Packed executable bytes | APK installed payload bytes | IPK installed payload bytes |
 |---|---:|---:|---:|

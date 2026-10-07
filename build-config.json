@@ -14,5 +14,6 @@
     "tfogo_checklinkname0"
   ],
   "mirror_base": "https://mirror.51343.ru/forkop/sing-box-x",
-  "release_tag": "1.0.0-r2"
+  "release_tag": "1.0.0",
+  "release_status": "stable"
 }

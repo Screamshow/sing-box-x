@@ -10,7 +10,7 @@ snapshot() {
     ubus call service list '{"name":"sing-box"}'
 }
 snapshot > "$stage/before"
-base=https://mirror.51343.ru/forkop/sing-box-x/releases/1.0.0-r2
+base=https://mirror.51343.ru/forkop/sing-box-x/releases/1.0.0
 mkdir -p "$stage/root"
 if [ "$kind" = apk ]; then
     curl -fsSL "$base/sing-box-x_1.0.0-r2_x86_64.apk" -o "$archive"

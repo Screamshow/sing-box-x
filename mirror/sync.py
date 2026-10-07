@@ -41,7 +41,8 @@ def main():
         if digest(manifest_data)!=assets['manifest.json']['digest'].removeprefix('sha256:'):raise ValueError('Manifest digest mismatch')
         manifest=json.loads(manifest_data)
         if manifest.get('release_tag',manifest['version'])!=args.tag or manifest['name']!='sing-box-x':raise ValueError('Unexpected manifest')
-        revision=args.tag.rsplit('-r',1)[1] if '-r' in args.tag else '1'
+        revision=str(manifest.get('package_revision',args.tag.rsplit('-r',1)[1] if '-r' in args.tag else '1'))
+        if not re.fullmatch(r'[1-9]\d*',revision):raise ValueError('Invalid package revision')
         required={f'sing-box-x_{manifest["version"]}-{rev}_{arch}.{fmt}' for arch in ('aarch64_cortex-a53','x86_64') for fmt,rev in (('apk','r'+revision),('ipk',revision))}
         if not required.issubset({a['name'] for a in manifest['assets']}):raise ValueError('Required packages missing')
         releases=args.root/'releases';releases.mkdir(exist_ok=True);destination=releases/args.tag

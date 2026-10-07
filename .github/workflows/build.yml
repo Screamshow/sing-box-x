@@ -44,12 +44,16 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v4.3.0
         with:
           name: sing-box-x-packages
           path: dist
-      - name: Publish preparation release
+      - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --prerelease --title "sing-box X $GITHUB_REF_NAME" --notes "Preparation release based on sing-box 1.14.2. UPX builds for OpenWrt ARM64 and x86-64. Full migration and ARM64 runtime validation are required before Forkop canary adoption. Router installation uses the Forkop mirror."
+          status=$(python3 -c "import json; print(json.load(open('build-config.json')).get('release_status', 'candidate'))")
+          flags=()
+          if [ "$status" != stable ]; then flags+=(--prerelease); fi
+          gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" "${flags[@]}" --title "sing-box X $GITHUB_REF_NAME" --notes ""
