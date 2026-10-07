@@ -36,9 +36,11 @@ GitHub Actions runs the same recipe and publishes tagged releases. GitHub APKs a
 
 ## Validation status
 
+ARM64 was installed on a GL-MT6000 running OpenWrt 25.12.5. Forkop startup, local DNS, Clash API and a real HTTPS request through its SOCKS inbound passed; the packed binary allocated 8,344 KiB on writable flash.
+
 Revision 2 APK/IPK installation and reinstall passed in isolated roots on the existing OpenWrt 25/24 x86-64 VMs, including preservation of modified configuration. Published mirror files and APK signatures were verified. See [VALIDATION.md](VALIDATION.md) for exact sizes and scope.
 
-Experimental x86-64 binaries passed clean-boot memory, configuration, DNS, ruleset and basic SOCKS/Clash API tests on existing OpenWrt 24/25 VMs. ARM64 execution, real subscription gRPC traffic, latest Xray REALITY compatibility and full package migration checks remain release gates before Forkop canary adoption. Version 1.0.0 packages are preparation artifacts until those checks finish.
+Experimental x86-64 binaries passed clean-boot memory, configuration, DNS, ruleset and basic SOCKS/Clash API tests on existing OpenWrt 24/25 VMs. Real subscription gRPC traffic, latest Xray REALITY compatibility and full package migration checks remain validation items before Forkop canary adoption. Version 1.0.0 (packaging revision 2) is released for the documented feature set. Full Forkop variant migration and rollback checks remain required before changing the Forkop installer default.
 
 ## License and source
 

@@ -8,6 +8,15 @@ def fetch(url):
     req=urllib.request.Request(url,headers={'User-Agent':'sing-box-x-mirror','Accept':'application/vnd.github+json' if url.startswith('https://api.github.com/') else 'application/octet-stream'})
     with urllib.request.urlopen(req,timeout=120) as response:return response.read()
 def digest(data):return hashlib.sha256(data).hexdigest()
+def publish_catalog(root, published, release, tag):
+    catalog={**published,'manifest_url':f'{MIRROR_BASE}/releases/{tag}/manifest.json',
+             'prerelease':bool(release['prerelease']),
+             'status':'candidate' if release['prerelease'] else 'stable'}
+    index='candidate.json' if release['prerelease'] else 'latest.json'
+    temporary=root/(index+'.new');temporary.write_text(json.dumps(catalog,indent=2)+'\n')
+    temporary.chmod(0o644);os.replace(temporary,root/index)
+    return index
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--tag',required=True)
@@ -37,7 +46,8 @@ def main():
             published=json.loads((destination/'manifest.json').read_text())
             for asset in published['assets']:
                 if digest((destination/asset['name']).read_bytes())!=asset['sha256']:raise ValueError('Existing mirror asset corrupt')
-            print(f'{args.tag} already verified');return
+            index=publish_catalog(args.root,published,release,args.tag)
+            print(f'{args.tag} already verified; {index} refreshed');return
         staging=Path(tempfile.mkdtemp(prefix=f'.{args.tag}-',dir=releases))
         try:
             (staging/'upstream-manifest.json').write_bytes(manifest_data)
@@ -65,9 +75,7 @@ def main():
             (staging/'SHA256SUMS').write_text(''.join(digest(p.read_bytes())+'  '+p.name+'\n' for p in sorted(staging.iterdir()) if p.is_file()))
             for p in staging.iterdir():p.chmod(0o644)
             staging.chmod(0o755);os.rename(staging,destination)
-            catalog={**manifest,'manifest_url':f'{MIRROR_BASE}/releases/{args.tag}/manifest.json'}
-            index='candidate.json' if release['prerelease'] else 'latest.json'
-            temporary=args.root/(index+'.new');temporary.write_text(json.dumps(catalog,indent=2)+'\n');temporary.chmod(0o644);os.replace(temporary,args.root/index)
+            index=publish_catalog(args.root,manifest,release,args.tag)
             print(f'Published {args.tag}: {len(manifest["assets"])} verified assets; {index}')
         except BaseException:
             if staging.exists():shutil.rmtree(staging)
