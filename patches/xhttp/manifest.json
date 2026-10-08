@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "source": "https://github.com/FiyeroT/podkop-engine",
+  "tag": "v1.14.2-r12",
+  "commit": "46e2370",
+  "license": "GPL-3.0-or-later",
+  "patches": [
+    {
+      "file": "0031-readwait-wait-for-data-without-a-buffer-on-QUIC-stre.patch",
+      "sha256": "7f6a155eef1f0a84252b5700156572befff85122dafed9c66a5179888c29e002",
+      "author": "FiyeroT <me@fiyero.xyz>",
+      "include": "common/readwait/*"
+    },
+    {
+      "file": "0046-xhttp-add-the-client-of-Xray-s-XHTTP-transport-work-.patch",
+      "sha256": "9e2f0a3075e7e92f4b79fe47054f93edd4bafcb4575d26ec7587dd77f9c4838d",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0047-xhttp-tests-for-options-configuration-errors-the-dow.patch",
+      "sha256": "969fffbfde7c31c899b2ddc3c9a2df6ea9cc3b51909d6e53b5f0e4844445245f",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0048-xhttp-a-small-default-request-size-for-uploads-carri.patch",
+      "sha256": "75e7127c7e26a04eb1dee7d1a02462314cbb824dd7e1c1094aa3881a1e973e3c",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0049-xhttp-cap-the-frame-size-the-HTTP-2-client-writes-wa.patch",
+      "sha256": "5573f94880a7800313e617aa288192ba412d0fc330aeeb87b769fd544c0170d9",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0050-xhttp-test-the-backoff-against-a-server-that-resets-.patch",
+      "sha256": "ffc35171df7a651aabb3d3109165518b9a8ac32aa43eba21625aebc5235ee21a",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0051-xhttp-do-not-cancel-packet-up-uploads-with-their-ses.patch",
+      "sha256": "d6d96b10674d35b825a64300cb83847b92f3d15ef753cd15e19c20be2a533e02",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0052-xhttp-the-transport-in-the-option-schema.patch",
+      "sha256": "74b00445d54d2a51512b76fcbb379d47102daec24ad7b2e659159e034b526ddc",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0053-xhttp-BBR-congestion-control-and-the-Chrome-QUIC-pro.patch",
+      "sha256": "fa0bc0a5d9d7a391e540950bf2d1ab645dcb6d36fae03e013372aef4accf212d",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0054-xhttp-fixes-from-the-review.patch",
+      "sha256": "e4dcaba41fcd45a0ff9bf3a6dfca84e18da64fad9df44373dd0742a17ab6dfd9",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0057-xhttp-an-oversized-request-no-longer-takes-the-conne.patch",
+      "sha256": "28f5ec1d83da14b3a87a15b73313046f4e41e2c5a2f2319364ec9b9c13ae9f78",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0058-xhttp-data-written-before-a-close-is-sent.patch",
+      "sha256": "c9b369ca49117db6357d404fbba9432293b9273508cd536ca8a405c601301d59",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0059-xhttp-the-backoff-holds-back-connections-not-session.patch",
+      "sha256": "9295978657f30331a64cff0aafd52c3c5dbe9b4b6a4aefffd860302a90b0d0e3",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0060-xhttp-a-graceful-GOAWAY-is-not-a-failure-of-the-serv.patch",
+      "sha256": "34798621509867bd5e6fde4d94dda066bb04aa907c2c703b5843e81506de1443",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0061-xhttp-HTTP-3-takes-another-connection-when-one-is-ou.patch",
+      "sha256": "18ec4ace403f7117eb3de98e32547bb14f9156bdaea0d44884e0be5f6a0c0636",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0062-xhttp-no-post-interval-for-a-range-from-zero-tests-f.patch",
+      "sha256": "c5ceb9101ca5701cf2566fd8b6946732d32c8f7932113454579b2794c5deaef8",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0063-xhttp-no-time-limit-on-an-upload-a-watched-connectio.patch",
+      "sha256": "c7704872c6eee898eb0b681fd590dcf8af73468d3705e9a20ff2c8b6622b41d4",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0064-xhttp-fixes-from-the-second-review.patch",
+      "sha256": "a21bf91ca1077dd6ea514e043fa32751376d07d9b3be384cdbdd0fb26f7d3c1e",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0068-version-list-the-features-of-this-build.patch",
+      "sha256": "4c4f69cc2723860f687f1069d7ecd3afab8b1aa94d35c741eece695d6c73df1f",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0069-xhttp-Close-resets-the-transport-instead-of-ending-i.patch",
+      "sha256": "e9784e16271ce4fd833474be5d06676864331ba310c754b9405ef05d0e0837c4",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0071-xhttp-browser-versions-survive-a-clock-that-was-neve.patch",
+      "sha256": "1263dcb82d234d6531b6d46d1b5b37c464abc15814ad339a8c0b19c675787b2e",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0072-xhttp-refuse-an-uplink_http_method-that-is-not-a-tok.patch",
+      "sha256": "e6866d98bf10b678023f4f6245a290228ccc36d52676993c7d495e91702f372f",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    },
+    {
+      "file": "0073-xhttp-one-check-of-the-options-and-a-download-server.patch",
+      "sha256": "6b17a3942444ebb03ed6eb1d548f2e98f7fb5dfbd017360490d3b04ed7d3505d",
+      "author": "FiyeroT <me@fiyero.xyz>"
+    }
+  ],
+  "adaptations": [
+    "0031 common/readwait only; no gRPC or QUIC protocol changes",
+    "0046 promote pinned cpuid v2.3.0 without unrelated go.mod forks",
+    "0068 advertise only XHTTP HTTP/1.1 and HTTP/2",
+    "remove HTTP/3 implementation and TLS QUIC helpers; unconditional explicit rejection",
+    "0064 enable non-QUIC unanswered-post and abandoned-dial regressions"
+  ]
+}

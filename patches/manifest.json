@@ -1,0 +1,40 @@
+{
+  "patches": [
+    {
+      "file": "0015-sniff-bound-the-CRYPTO-frames-of-a-QUIC-Initial.patch",
+      "sha256": "de5e5804a9e520231a5cf4ecb98d9db4a83115efe879abc0f2a1b9e07765bece"
+    },
+    {
+      "file": "0017-transport-a-failed-HTTP-2-dial-frees-the-handshake-w.patch",
+      "sha256": "674cfa207d1aff92e3464fe5975b9c2e17595c5ab0b1edd8fc328d494a507070"
+    },
+    {
+      "file": "0025-dns-https-reset-the-transport-on-a-timeout-only-when.patch",
+      "sha256": "3c69fbbaa87f41768ab8d82dd16d455b7e80e8ccc935693c8ef759e6c786d181"
+    },
+    {
+      "file": "0038-Backport-fix-protocol-input-validation-upstream-0751.patch",
+      "sha256": "efff8e70d412c61f643fd5f75c122d852d68fb268616c16874f155a844391a67"
+    },
+    {
+      "file": "0039-Backport-close-interrupted-connections-outside-the-g.patch",
+      "sha256": "cf78b5dce2e1193de5981894cee93952052cd69ca23fd276b137d5627f5910a7"
+    },
+    {
+      "file": "0041-sniff-a-panicking-sniffer-fails-its-connection-a-UDP.patch",
+      "sha256": "7cece92433c3d419209d2eba489fab9f90a59593183c03593863e1c51c3e57cb"
+    },
+    {
+      "file": "0043-log-format-entries-for-the-Clash-API-only-while-its-.patch",
+      "sha256": "e24b3a3947f51ff599c3a190c5b104d179136cb6bc6487e02392b97319596ae7"
+    },
+    {
+      "file": "0084-sniff-log-the-stack-of-a-panicking-sniffer-once-a-mi.patch",
+      "sha256": "af140dd6356c726892a7aeb96b304294f81859c1537ae817c1d669185148c544"
+    }
+  ],
+  "license": "GPL-3.0-or-later",
+  "schema": 1,
+  "source": "https://github.com/FiyeroT/podkop-engine",
+  "tag": "v1.14.2-r12"
+}

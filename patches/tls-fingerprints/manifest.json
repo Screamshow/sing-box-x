@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "license": "GPL-3.0-or-later",
+  "source": "https://github.com/FiyeroT/podkop-engine",
+  "tag": "v1.14.2-r12",
+  "commit": "46e2370",
+  "patches": [
+    {
+      "file": "0001-reality-keep-X25519MLKEM768-key-share-announce-clien.patch",
+      "author": "FiyeroT <me@fiyero.xyz>",
+      "sha256": "01408f445f3275e4cbd3d75d8e85c2ad3ded3ead990f8927d08d7fd608e9caf8"
+    },
+    {
+      "file": "0002-utls-firefox-Firefox-148-safari-Safari-26.3-as-Xray-.patch",
+      "author": "FiyeroT <me@fiyero.xyz>",
+      "sha256": "aa06cb429dbfd03f19fb23c69d383420e5ce4828ac49521b319f587c48893a83"
+    },
+    {
+      "file": "0010-utls-keep-the-randomized-fingerprint-consistent.patch",
+      "author": "FiyeroT <me@fiyero.xyz>",
+      "sha256": "514e7cdb405acec5d48671d1da739f04188da887dcdaddfd1de57d79bab14435"
+    },
+    {
+      "file": "0085-tls-name-the-uTLS-fingerprints-REALITY-cannot-use.patch",
+      "author": "FiyeroT <me@fiyero.xyz>",
+      "sha256": "6c128d7efeea4c7e29a4be82675f94a71679a3d21ca9e83491b4c9b89f042553"
+    }
+  ]
+}

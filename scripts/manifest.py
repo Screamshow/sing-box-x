@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import hashlib,json,subprocess,os
+import hashlib,json,subprocess,os,io,tarfile
 from pathlib import Path
 root=Path(__file__).resolve().parents[1];c=json.loads((root/'build-config.json').read_text());out=root/'dist';assets=[]
 for f in sorted(out.iterdir()):
@@ -7,9 +7,12 @@ for f in sorted(out.iterdir()):
     asset={'name':f.name,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),'size':f.stat().st_size,'url':f"{c['mirror_base']}/releases/{c.get('release_tag',c['version'])}/{f.name}"}
     for goarch,arch in [('arm64','aarch64_cortex-a53'),('amd64','x86_64')]:
         if arch in f.name and f.suffix in ('.apk','.ipk'):
-            payload=root/'work'/f'payload-{arch}'
-            paths=[p for p in payload.rglob('*') if p.is_file() and (f.suffix=='.apk' or not p.relative_to(payload).as_posix().startswith('lib/apk/'))]
-            installed=sum(p.stat().st_size for p in paths)
+            installed=0
+            if f.suffix=='.ipk':
+                with tarfile.open(f, 'r:gz') as outer:
+                    data=outer.extractfile('data.tar.gz').read()
+                with tarfile.open(fileobj=io.BytesIO(data), mode='r:gz') as payload:
+                    installed=sum(member.size for member in payload if member.isfile())
             if f.suffix=='.apk':
                 dump=subprocess.check_output([os.environ['APK_TOOL'],'adbdump',str(f)],text=True)
                 import re
