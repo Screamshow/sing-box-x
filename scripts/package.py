@@ -40,7 +40,7 @@ def main():
                 if stat.S_IMODE(f.stat().st_mode)!=mode: raise ValueError('Payload filesystem cannot preserve package permissions')
                 files.append(('./'+name,f.read_bytes(),mode))
         size=sum(len(data) for _,data,_ in files)
-        control=f"Package: sing-box-x\nVersion: {v}-{rev}\nArchitecture: {arch}\nInstalled-Size: {size}\nDepends: ca-bundle, kmod-tun\nConflicts: sing-box, sing-box-tiny, sing-box-extended\nProvides: sing-box\nSection: net\nLicense: GPL-3.0-or-later\nMaintainer: Screamshow\nSource: https://github.com/Screamshow/sing-box-x\nDescription: Compact sing-box for Forkop X with uTLS and Clash API, packed with UPX\n"
+        control=f"Package: sing-box-x\nVersion: {v}-{rev}\nArchitecture: {arch}\nInstalled-Size: {size}\nDepends: ca-bundle, kmod-tun\nConflicts: sing-box, sing-box-tiny, sing-box-extended\nProvides: sing-box\nSection: net\nLicense: GPL-3.0-or-later\nMaintainer: Screamshow\nSource: https://github.com/Screamshow/forkop-x-engine\nDescription: Forkop X Engine with uTLS and Clash API, packed with UPX\n"
         controls=[('./control',control.encode(),0o644),('./conffiles',b'/etc/config/sing-box\n',0o644)]
         package=tar_bytes([('debian-binary',b'2.0\n',0o644),('control.tar.gz',tar_bytes(controls),0o644),('data.tar.gz',tar_bytes(files),0o644)])
         (out/f'sing-box-x_{v}-{rev}_{arch}.ipk').write_bytes(package)
@@ -53,7 +53,7 @@ def main():
             directory.chmod(0o755);os.utime(directory,(int(os.environ.get('SOURCE_DATE_EPOCH','0')),)*2)
             if stat.S_IMODE(directory.stat().st_mode)!=0o755: raise ValueError('Payload directory permissions are not 0755')
         cmd=[a.apk_tool,'mkpkg','--files',str(payload),'--output',str(out/f'sing-box-x_{v}-r{rev}_{arch}.apk')]
-        fields={'name':'sing-box-x','version':f'{v}-r{rev}','arch':arch,'description':'Compact sing-box for Forkop X with uTLS and Clash API, packed with UPX','license':'GPL-3.0-or-later','origin':'sing-box-x','maintainer':'Screamshow','url':'https://github.com/Screamshow/sing-box-x','depends':'ca-bundle kmod-tun !sing-box !sing-box-tiny !sing-box-extended','provides':'sing-box'}
+        fields={'name':'sing-box-x','version':f'{v}-r{rev}','arch':arch,'description':'Forkop X Engine with uTLS and Clash API, packed with UPX','license':'GPL-3.0-or-later','origin':'sing-box-x','maintainer':'Screamshow','url':'https://github.com/Screamshow/forkop-x-engine','depends':'ca-bundle kmod-tun !sing-box !sing-box-tiny !sing-box-extended','provides':'sing-box'}
         for key,value in fields.items():cmd+=['-I',f'{key}:{value}']
         if os.geteuid()==0:
             for f in [payload,*payload.rglob('*')]:os.chown(f,0,0)

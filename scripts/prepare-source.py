@@ -87,5 +87,8 @@ if __name__ == "__main__":
     runpy.run_path(str(Path(__file__).with_name("prepare-tls-fingerprints.py")))["prepare"](args.source.resolve())
     runpy.run_path(str(Path(__file__).with_name("prepare-xhttp.py")))["prepare"](args.source.resolve())
     runpy.run_path(str(Path(__file__).with_name("prepare-vision.py")))["prepare"](args.source.resolve())
+    runpy.run_path(str(Path(__file__).with_name("prepare-fakeip.py")))["prepare"](args.source.resolve())
+    runpy.run_path(str(Path(__file__).with_name("prepare-dns-sniff.py")))["prepare"](args.source.resolve())
+    runpy.run_path(str(Path(__file__).with_name("prepare-runtime-opt.py")))["prepare"](args.source.resolve())
     prepare(args.source.resolve())
     runpy.run_path(str(Path(__file__).with_name("prepare-route-match.py")))["prepare"](args.source.resolve())

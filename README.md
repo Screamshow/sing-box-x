@@ -1,6 +1,6 @@
-# sing-box
+# Forkop X Engine
 
-The universal proxy platform.
+Compact proxy core for Forkop, based on the upstream sing-box core. Independent project; not affiliated with SagerNet.
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/sing-box.svg)](https://repology.org/project/sing-box/versions)
 

@@ -1,0 +1,28 @@
+{
+  "patches": [
+    {
+      "sha256": "597ecfe546c6825a999b6d61f6890d40e5e80b04575080314de2907b90e514fe",
+      "file": "0011-dns-fakeip-answer-from-memory-save-to-the-cache-file.patch"
+    },
+    {
+      "sha256": "0fc90591e2027eab72e43db94038845acbc17fce5f5c9c218835f7049efa643d",
+      "file": "0013-route-a-FakeIP-address-without-a-record-goes-by-the-.patch"
+    },
+    {
+      "sha256": "af0217f507dcceee56fcf17eb768a3881b9257fa1a3ef36841a9947d42c92918",
+      "file": "0080-dns-fakeip-answer-new-names-from-memory-while-the-ca.patch"
+    },
+    {
+      "sha256": "6b790654d46f4611969913c32e2595692c8b0142f64a1cca8aedddbbd95bff2a",
+      "file": "0081-dns-fakeip-tell-the-loop-to-stop-before-the-store-re.patch"
+    },
+    {
+      "sha256": "9e207701cadea2d58b9c6c1baff5d334c3f81ae18ed30bf31c3139836eb28c98",
+      "file": "0082-route-log-a-connection-without-a-fakeip-record-as-a-.patch"
+    }
+  ],
+  "source": "https://github.com/FiyeroT/podkop-engine",
+  "schema": 1,
+  "tag": "v1.14.2-r12",
+  "license": "GPL-3.0-or-later"
+}

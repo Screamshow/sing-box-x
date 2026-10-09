@@ -1,0 +1,20 @@
+{
+  "license": "GPL-3.0-or-later",
+  "schema": 1,
+  "tag": "v1.14.2-r12",
+  "patches": [
+    {
+      "file": "0014-listener-an-output-queue-of-1024-packets-for-UDP-ins.patch",
+      "sha256": "9fdb6801b52ca8d97ceb2d7f0be71d8abea8723a29488860b47368c5d4d51601"
+    },
+    {
+      "file": "0032-box-let-the-Go-memory-limit-follow-the-memory-the-sy.patch",
+      "sha256": "684ff17178933c2d7c8c9df388c3ed52268457bbd8342c365d466a1c8ceea7e1"
+    },
+    {
+      "file": "0045-rule-set-collect-garbage-after-a-load-only-log-repea.patch",
+      "sha256": "0eef6c522bb2aab4fce74e9cfca0853fbd5c726d29e1d4fdc76c5d4c53c9e8bc"
+    }
+  ],
+  "source": "https://github.com/FiyeroT/podkop-engine"
+}

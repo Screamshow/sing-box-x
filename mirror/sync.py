@@ -2,7 +2,7 @@
 """Verify GitHub release assets, sign APKs locally and publish mirror-only URLs."""
 import argparse,fcntl,hashlib,json,os,re,shutil,subprocess,tempfile,urllib.request
 from pathlib import Path
-REPOSITORY='Screamshow/sing-box-x'
+REPOSITORY='Screamshow/forkop-x-engine'
 MIRROR_BASE='https://mirror.51343.ru/forkop/sing-box-x'
 def fetch(url):
     req=urllib.request.Request(url,headers={'User-Agent':'sing-box-x-mirror','Accept':'application/vnd.github+json' if url.startswith('https://api.github.com/') else 'application/octet-stream'})

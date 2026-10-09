@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "tag": "v1.14.2-r12",
+  "patches": [
+    {
+      "sha256": "8da39d6b328fefc169098321342e9993519971cb49096d3b019dcc8bc313e06e",
+      "file": "0008-route-answer-DNS-hijacked-from-a-NAT-session-from-a-.patch"
+    },
+    {
+      "sha256": "9246e01a8eb6cc61bc4b3c1e088816a56e4f1af9df17fd607df5c924f675529a",
+      "file": "0012-route-exchange-DNS-of-a-NAT-session-off-the-reading-.patch"
+    },
+    {
+      "sha256": "782905ccf3375cb4234a5ddd11592e96e2d9d21a7302e40fd3a939ae1320b44b",
+      "file": "0018-sniff-stop-the-TLS-server-handshake-once-the-ClientH.patch"
+    },
+    {
+      "sha256": "c7e2c5d19895d3f5035b7d3b64d6b28425f6ec01ab6eaea4ccedd13a0869d836",
+      "file": "0027-dns-log-failed-exchanges-once-per-server-with-a-coun.patch"
+    }
+  ],
+  "source": "https://github.com/FiyeroT/podkop-engine",
+  "license": "GPL-3.0-or-later"
+}
