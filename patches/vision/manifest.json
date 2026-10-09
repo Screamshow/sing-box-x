@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "source": "https://github.com/FiyeroT/sing-vmess",
+  "commit": "8bce78ee76de68dee2d879d990c3fbbda3b777f9",
+  "license": "GPL-3.0-or-later",
+  "module": "github.com/sagernet/sing-vmess",
+  "module_version": "v0.2.8",
+  "module_sum": "h1:xd5nnDOMlC76RgrLksS4jlk3eMt3c3CvQY3NsjWPWeI=",
+  "patch": "0001-vless-vision-direct-read.patch",
+  "patch_sha256": "d5a84607d789041f8e2127e2d6365d584e107dc5b7b7853b9a989b22ee2bef1f"
+}

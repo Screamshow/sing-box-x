@@ -1,0 +1,148 @@
+From 8bce78ee76de68dee2d879d990c3fbbda3b777f9 Mon Sep 17 00:00:00 2001
+From: FiyeroT <me@fiyero.xyz>
+Date: Sat, 3 Oct 2026 20:14:13 +0300
+Subject: [PATCH] vless: let the copy loop read the connection under Vision in
+ direct mode
+
+In direct mode the server sends the inner TLS records as they are and Read only
+passes them on from the underlying connection. The copy loop still read through
+VisionConn, with a pool buffer held through every wait and a copy through user
+space. Once the data buffered at the switch is out, VisionConn now reports its
+read handshake complete (EarlyReader), becomes replaceable for reading and names
+the underlying connection as its upstream reader, so the copy loop reads it
+directly: with its read waiter, or with splice when both ends are sockets.
+---
+ vless/vision.go             | 20 +++++++++
+ vless/vision_direct_test.go | 89 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 109 insertions(+)
+ create mode 100644 vless/vision_direct_test.go
+
+diff --git a/vless/vision.go b/vless/vision.go
+index 2a8bc51..a5eb7f5 100644
+--- a/vless/vision.go
++++ b/vless/vision.go
+@@ -384,6 +384,26 @@ func (c *VisionConn) NeedAdditionalReadDeadline() bool {
+ 	return true
+ }
+ 
++// In direct mode the server sends the inner TLS records as they are and Read only passes
++// them on from the underlying connection, once the data buffered at the switch is out. The
++// connection then reports its read handshake complete and lets the copy loop read the
++// underlying connection itself: with its read waiter or splice instead of a buffer held
++// through every wait and a copy through user space. The read side alone: writes keep
++// going through Write. Only the reading goroutine changes this state, and the copy loop
++// asks from that goroutine.
++
++func (c *VisionConn) NeedHandshakeForRead() bool {
++	return !c.directRead || len(c.remainingBuffers) > 0
++}
++
++func (c *VisionConn) ReaderReplaceable() bool {
++	return c.directRead && len(c.remainingBuffers) == 0
++}
++
++func (c *VisionConn) UpstreamReader() any {
++	return c.netConn
++}
++
+ func (c *VisionConn) Upstream() any {
+ 	return c.Conn
+ }
+diff --git a/vless/vision_direct_test.go b/vless/vision_direct_test.go
+new file mode 100644
+index 0000000..46ba9d9
+--- /dev/null
++++ b/vless/vision_direct_test.go
+@@ -0,0 +1,89 @@
++package vless
++
++import (
++	"bytes"
++	"net"
++	"sync/atomic"
++	"testing"
++	"time"
++
++	"github.com/sagernet/sing/common/buf"
++	"github.com/sagernet/sing/common/bufio"
++	N "github.com/sagernet/sing/common/network"
++)
++
++// rawConn stands for the connection under the TLS one: it has a read waiter and counts
++// what came through it.
++type rawConn struct {
++	net.Conn
++	options N.ReadWaitOptions
++	waits   atomic.Int32
++}
++
++func (c *rawConn) InitializeReadWaiter(options N.ReadWaitOptions) (needCopy bool) {
++	c.options = options
++	return false
++}
++
++func (c *rawConn) WaitReadBuffer() (*buf.Buffer, error) {
++	c.waits.Add(1)
++	buffer := c.options.NewBuffer()
++	n, err := c.Conn.Read(buffer.FreeBytes())
++	if n > 0 {
++		buffer.Truncate(n)
++		return buffer, nil
++	}
++	buffer.Release()
++	return nil, err
++}
++
++// In direct mode the copy loop takes the data buffered at the switch through the Vision
++// connection, then reads the underlying connection itself, here through its read waiter.
++func TestVisionDirectReadUnwraps(t *testing.T) {
++	remote, local := net.Pipe()
++	unused, unusedPeer := net.Pipe()
++	defer unused.Close()
++	defer unusedPeer.Close()
++	raw := &rawConn{Conn: local}
++	conn := &VisionConn{
++		Conn:             unused,
++		netConn:          raw,
++		directRead:       true,
++		remainingBuffers: []*buf.Buffer{buf.As([]byte("buffered "))},
++	}
++	if !conn.NeedHandshakeForRead() || conn.ReaderReplaceable() {
++		t.Fatal("the connection is replaceable before the buffered data is out")
++	}
++
++	var output bytes.Buffer
++	done := make(chan error, 1)
++	go func() {
++		_, err := bufio.Copy(&output, conn)
++		done <- err
++	}()
++	time.Sleep(20 * time.Millisecond)
++	if _, err := remote.Write([]byte("direct")); err != nil {
++		t.Fatal(err)
++	}
++	remote.Close()
++	if err := <-done; err != nil {
++		t.Fatal(err)
++	}
++	if output.String() != "buffered direct" {
++		t.Fatalf("copied %q", output.String())
++	}
++	if raw.waits.Load() == 0 {
++		t.Fatal("the copy loop kept reading through the Vision connection")
++	}
++	if conn.NeedHandshakeForRead() || !conn.ReaderReplaceable() || conn.UpstreamReader() != net.Conn(raw) {
++		t.Fatal("the drained direct connection is not replaceable by its underlying one")
++	}
++}
++
++// Before direct mode the connection stays in the copy path.
++func TestVisionPaddingReadNotReplaceable(t *testing.T) {
++	conn := &VisionConn{withinPaddingBuffers: true}
++	if !conn.NeedHandshakeForRead() || conn.ReaderReplaceable() {
++		t.Fatal("the connection is replaceable before direct mode")
++	}
++}
+-- 
+2.53.0.windows.3
+

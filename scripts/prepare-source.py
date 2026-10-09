@@ -86,5 +86,6 @@ if __name__ == "__main__":
     runpy.run_path(str(Path(__file__).with_name("prepare-hardening.py")))["prepare"](args.source.resolve())
     runpy.run_path(str(Path(__file__).with_name("prepare-tls-fingerprints.py")))["prepare"](args.source.resolve())
     runpy.run_path(str(Path(__file__).with_name("prepare-xhttp.py")))["prepare"](args.source.resolve())
+    runpy.run_path(str(Path(__file__).with_name("prepare-vision.py")))["prepare"](args.source.resolve())
     prepare(args.source.resolve())
     runpy.run_path(str(Path(__file__).with_name("prepare-route-match.py")))["prepare"](args.source.resolve())
